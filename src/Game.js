@@ -1,35 +1,32 @@
-const grids = require('./grids');
-
 module.exports = class Game {
   constructor() {
 
-    this.ROWS = 6;
-    this.COLS = 7;
-
-    this.board = grids.generate(this.ROWS, this.COLS);
+    this.grid = { ROWS: 6, COLS: 7 };
+    this.board = [...Array(this.grid.ROWS)].map(() => Array(this.grid.COLS).fill(0));
 
     this.turn = 1;
 
-    this.displayBoard = () => [...this.board].reverse().reduce(this.displayRow, '');
-    this.displayRow = (acc, row) => acc + `<tr>${row.reduce(this.displayCol, '')}</tr>`;
-    this.displayCol = (acc, col, i) => acc + `<td data-col="${i}" class="color-${col}"></td>`;
+    this.displayBoard = () => {
+      const displayRow = (acc, row) => acc + `<tr>${row.reduce(displayCol, '')}</tr>`;
+      const displayCol = (acc, col, i) => acc + `<td data-col="${i}" class="color-${col}"></td>`;
+      return [...this.board].reverse().reduce(displayRow, '');
+    };
 
     this.addTurn = col => {
+
       // console.log('checking for appropriate row');
-      for (let row = 0; row < 6; row++) {
+      for (let row = 0; row < this.grid.ROWS; row++) {
         if (this.board[row][col] === 0) {
           this.board[row][col] = this.turn;
+          this.turn = this.turn === 1 ? 2 : 1;
           // console.log('going to check win condition');
-          if (this.winCheck(row, col)) {
-            // console.log(`${this.turn === 1 ? 'red' : 'yellow'} won`);
-            return true;
-          } else {
-            // console.log('win condition is false');
-            this.turn = this.turn === 1 ? 2 : 1;
-            return false;
-          }
+          return this.winCheck(row, col);
         }
       }
+
+
+
+
     };
 
     this.winCheck = (row, col) => {
@@ -37,9 +34,9 @@ module.exports = class Game {
       // MAKE RECURSIVE
 
       // console.log('starting position', {row, col});
-      for (let x = -1; x < 2; x++) {
+      for (const x of [-1, 0, 1]) {
         if (!this.board[row + x]) continue;
-        for (let y = -1; y < 2; y++) {
+        for (const y of [-1, 0, 1]) {
           if ((x === 0 && y === 0) || !this.board[row + x][col + y]) continue;
           // console.log('inbounds', {x,y});
           if (this.board[row + x][col + y] === this.turn) {
