@@ -1,6 +1,6 @@
 const $ = require('jquery');
 
-const Game = require('./Game');
+const Game = require('./src/Game');
 
 const app = {
   game: new Game(),
@@ -13,7 +13,7 @@ const app = {
   },
 
   updateBoard: function () {
-    $( 'table' ).html(app.game.generateBoard());
+    $( 'table' ).html(app.game.displayBoard());
     $( 'td' ).on('click', app.add);
   },
 

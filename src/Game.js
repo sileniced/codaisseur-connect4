@@ -1,19 +1,18 @@
+const grids = require('./grids');
+
 module.exports = class Game {
   constructor() {
+
+    this.ROWS = 6;
+    this.COLS = 7;
+
+    this.board = grids.generate(this.ROWS, this.COLS);
+
     this.turn = 1;
 
-    this.board = [
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-      [0,0,0,0,0,0,0],
-    ];
-
-    this.generateBoard = () => this.board.slice().reverse().reduce(this.generateRow, '');
-    this.generateRow = (acc, row) => acc + `<tr>${row.reduce(this.generateCol, '')}</tr>`;
-    this.generateCol = (acc, col, i) => acc + `<td data-col="${i}" class="color-${col}"></td>`;
+    this.displayBoard = () => [...this.board].reverse().reduce(this.displayRow, '');
+    this.displayRow = (acc, row) => acc + `<tr>${row.reduce(this.displayCol, '')}</tr>`;
+    this.displayCol = (acc, col, i) => acc + `<td data-col="${i}" class="color-${col}"></td>`;
 
     this.addTurn = col => {
       // console.log('checking for appropriate row');
